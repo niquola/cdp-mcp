@@ -1,0 +1,17 @@
+{
+  "name": "cdp-mcp",
+  "version": "1.0.0",
+  "description": "Chrome DevTools Protocol tools for Claude Code",
+  "skills": {
+    "cdp": {
+      "description": "Control headless Chrome via CDP - navigate, get HTML, screenshot, click, type",
+      "path": "skills/cdp/skill.md"
+    }
+  },
+  "mcp": {
+    "cdp": {
+      "command": "bun",
+      "args": ["src/index.js"]
+    }
+  }
+}

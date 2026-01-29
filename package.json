@@ -1,0 +1,15 @@
+{
+  "name": "cdp-mcp",
+  "version": "1.0.0",
+  "description": "Minimal CDP MCP server for Claude Code",
+  "main": "src/index.js",
+  "type": "module",
+  "bin": {
+    "cdp": "src/cli.js"
+  },
+  "scripts": {
+    "start": "bun src/index.js"
+  },
+  "keywords": ["mcp", "cdp", "chrome", "devtools", "claude"],
+  "license": "MIT"
+}
