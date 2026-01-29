@@ -142,14 +142,60 @@ curl localhost:2229/cdp -d '{"method":"Network.clearBrowserCookies"}'
 
 ### Emulation
 ```bash
-# Mobile viewport
-curl localhost:2229/cdp -d '{"method":"Emulation.setDeviceMetricsOverride","params":{"width":375,"height":812,"deviceScaleFactor":3,"mobile":true}}'
+# Set viewport size
+curl -s localhost:2229/cdp -d @- <<EOF
+{
+  "method": "Emulation.setDeviceMetricsOverride",
+  "params": {
+    "width": 1920,
+    "height": 1080,
+    "deviceScaleFactor": 1,
+    "mobile": false
+  }
+}
+EOF
+
+# Common sizes:
+# Desktop: 1920x1080, scale 1, mobile false
+# Laptop:  1366x768,  scale 1, mobile false
+# iPad:    768x1024,  scale 2, mobile true
+# iPhone:  375x812,   scale 3, mobile true
+
+# Reset viewport
+curl localhost:2229/cdp -d '{"method":"Emulation.clearDeviceMetricsOverride"}'
 
 # Geolocation
 curl localhost:2229/cdp -d '{"method":"Emulation.setGeolocationOverride","params":{"latitude":40.7128,"longitude":-74.006}}'
 
 # Dark mode
 curl localhost:2229/cdp -d '{"method":"Emulation.setEmulatedMedia","params":{"features":[{"name":"prefers-color-scheme","value":"dark"}]}}'
+```
+
+### Screenshot
+```bash
+# Take screenshot and save to file
+curl -s localhost:2229/cdp -d @- <<EOF | jq -r '.data' | base64 -d > screenshot.png
+{
+  "method": "Page.captureScreenshot",
+  "params": {"format": "png"}
+}
+EOF
+
+# Full page screenshot
+curl -s localhost:2229/cdp -d @- <<EOF | jq -r '.data' | base64 -d > full.png
+{
+  "method": "Page.captureScreenshot",
+  "params": {"format": "png", "captureBeyondViewport": true}
+}
+EOF
+
+# JPEG with quality
+curl -s localhost:2229/cdp -d @- <<EOF | jq -r '.data' | base64 -d > screenshot.jpg
+{
+  "method": "Page.captureScreenshot",
+  "params": {"format": "jpeg", "quality": 80}
+}
+EOF
 ```
 
 ## Architecture
