@@ -1,11 +1,11 @@
 {
-  "name": "cdp-mcp",
+  "name": "chro",
   "version": "1.0.0",
   "description": "Minimal CDP MCP server for Claude Code",
   "main": "src/index.js",
   "type": "module",
   "bin": {
-    "cdp-mcp": "src/index.js"
+    "chro": "src/index.js"
   },
   "scripts": {
     "start": "bun src/index.js"

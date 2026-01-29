@@ -1,11 +1,11 @@
-# cdp-mcp
+# chro
 
 Chrome DevTools Protocol MCP server for Claude Code. Zero dependencies.
 
 ## Structure
 
 ```
-cdp-mcp/
+chro/
 ├── src/
 │   └── index.js    # MCP server + REST API (:2229)
 ├── skills/
@@ -45,7 +45,7 @@ bun src/index.js
   "mcpServers": {
     "cdp": {
       "command": "bun",
-      "args": ["/path/to/cdp-mcp/src/index.js"]
+      "args": ["/path/to/chro/src/index.js"]
     }
   }
 }

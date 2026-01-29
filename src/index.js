@@ -83,7 +83,7 @@ async function handle(req) {
     return respond(id, {
       protocolVersion: "2024-11-05",
       capabilities: { tools: {} },
-      serverInfo: { name: "cdp-mcp", version: "1.0.0" },
+      serverInfo: { name: "chro", version: "1.0.0" },
     });
   }
 
