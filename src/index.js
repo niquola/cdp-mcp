@@ -2,17 +2,62 @@
 
 const HTTP_PORT = process.env.CDP_PORT || 2229;
 const BROWSER_URL = "http://127.0.0.1:9222";
+const DEBUG_PORT = 9222;
 
 let ws = null;
 let msgId = 0;
 const pending = new Map();
+let chromeProcess = null;
+
+function getChromePath() {
+  if (process.platform === "darwin") {
+    return "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+  } else if (process.platform === "win32") {
+    return "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+  }
+  return "google-chrome";
+}
+
+async function startChrome() {
+  const chromePath = getChromePath();
+  process.stderr.write(`Starting Chrome with debugging port ${DEBUG_PORT}...\n`);
+
+  chromeProcess = Bun.spawn([chromePath, `--remote-debugging-port=${DEBUG_PORT}`], {
+    stdout: "ignore",
+    stderr: "ignore",
+  });
+
+  // Wait for Chrome to be ready
+  for (let i = 0; i < 30; i++) {
+    await Bun.sleep(200);
+    try {
+      const res = await fetch(`${BROWSER_URL}/json/version`);
+      if (res.ok) {
+        process.stderr.write(`Chrome started successfully\n`);
+        return true;
+      }
+    } catch {}
+  }
+  throw new Error("Failed to start Chrome");
+}
+
+async function ensureBrowserRunning() {
+  try {
+    const res = await fetch(`${BROWSER_URL}/json/version`);
+    return res.ok;
+  } catch {
+    return await startChrome();
+  }
+}
 
 async function connectToBrowser() {
   if (ws?.readyState === WebSocket.OPEN) return ws;
 
+  await ensureBrowserRunning();
+
   const targets = await fetch(`${BROWSER_URL}/json/list`).then(r => r.json());
   const page = targets.find(t => t.type === "page");
-  if (!page) throw new Error("No page target found. Is browser running?");
+  if (!page) throw new Error("No page target found");
 
   return new Promise((resolve, reject) => {
     const socket = new WebSocket(page.webSocketDebuggerUrl);

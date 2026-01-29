@@ -60,6 +60,56 @@ bun src/index.js
 - `params` - CDP parameters
 - `outputFile` - save result to file
 
+### Example Prompts
+
+Common tasks you can ask Claude Code:
+
+**Navigation**
+- "Open https://example.com in Chrome"
+- "Go to google.com and search for 'bun runtime'"
+- "Reload the page"
+- "Go back to the previous page"
+
+**Screenshots**
+- "Take a screenshot of the current page"
+- "Capture a full-page screenshot and save as fullpage.png"
+- "Take a mobile screenshot (375x812)"
+- "Screenshot the page in dark mode"
+
+**Page Content**
+- "Get the page title"
+- "Find all links on the page"
+- "Extract all image URLs"
+- "Get the HTML of the page"
+- "Find all headings (h1, h2, h3)"
+- "List all form inputs on the page"
+
+**Interaction**
+- "Click the 'Submit' button"
+- "Type 'hello world' in the search input"
+- "Fill the login form with user@example.com and password123"
+- "Scroll to the bottom of the page"
+- "Click the element at coordinates 100, 200"
+
+**Extraction**
+- "Get all product prices from the page"
+- "Extract the main article text"
+- "Find all email addresses on the page"
+- "Get the value of all meta tags"
+- "List all external links"
+
+**Emulation**
+- "Set viewport to iPhone size"
+- "Enable dark mode"
+- "Set geolocation to New York"
+- "Emulate slow 3G network"
+
+**Cookies & Storage**
+- "Get all cookies"
+- "Set a cookie named 'session' with value 'abc123'"
+- "Clear all cookies"
+- "Get localStorage contents"
+
 ### REST API
 
 ```bash
