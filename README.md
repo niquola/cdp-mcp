@@ -60,56 +60,6 @@ bun src/index.js
 - `params` - CDP parameters
 - `outputFile` - save result to file
 
-### Example Prompts
-
-Common tasks you can ask Claude Code:
-
-**Navigation**
-- "Open https://example.com in Chrome"
-- "Go to google.com and search for 'bun runtime'"
-- "Reload the page"
-- "Go back to the previous page"
-
-**Screenshots**
-- "Take a screenshot of the current page"
-- "Capture a full-page screenshot and save as fullpage.png"
-- "Take a mobile screenshot (375x812)"
-- "Screenshot the page in dark mode"
-
-**Page Content**
-- "Get the page title"
-- "Find all links on the page"
-- "Extract all image URLs"
-- "Get the HTML of the page"
-- "Find all headings (h1, h2, h3)"
-- "List all form inputs on the page"
-
-**Interaction**
-- "Click the 'Submit' button"
-- "Type 'hello world' in the search input"
-- "Fill the login form with user@example.com and password123"
-- "Scroll to the bottom of the page"
-- "Click the element at coordinates 100, 200"
-
-**Extraction**
-- "Get all product prices from the page"
-- "Extract the main article text"
-- "Find all email addresses on the page"
-- "Get the value of all meta tags"
-- "List all external links"
-
-**Emulation**
-- "Set viewport to iPhone size"
-- "Enable dark mode"
-- "Set geolocation to New York"
-- "Emulate slow 3G network"
-
-**Cookies & Storage**
-- "Get all cookies"
-- "Set a cookie named 'session' with value 'abc123'"
-- "Clear all cookies"
-- "Get localStorage contents"
-
 ### REST API
 
 ```bash
@@ -120,6 +70,7 @@ curl localhost:2229/health
 For complex queries use heredoc:
 
 ```bash
+# Find all links on the page
 curl -s localhost:2229/cdp -d @- <<EOF
 {
   "method": "Runtime.evaluate",
@@ -134,65 +85,80 @@ EOF
 
 ### Page
 ```bash
-# Navigate
+# Open a URL
 curl localhost:2229/cdp -d '{"method":"Page.navigate","params":{"url":"https://example.com"}}'
 
-# Reload
+# Reload current page
 curl localhost:2229/cdp -d '{"method":"Page.reload"}'
 
-# Screenshot (base64)
+# Take screenshot (returns base64)
 curl localhost:2229/cdp -d '{"method":"Page.captureScreenshot","params":{"format":"png"}}'
 
-# PDF
+# Generate PDF of the page
 curl localhost:2229/cdp -d '{"method":"Page.printToPDF"}'
 
-# Get HTML
+# Get full page HTML
 curl localhost:2229/cdp -d '{"method":"Runtime.evaluate","params":{"expression":"document.documentElement.outerHTML"}}'
 ```
 
 ### Runtime (JavaScript)
 ```bash
-# Execute JS
+# Get page title
 curl localhost:2229/cdp -d '{"method":"Runtime.evaluate","params":{"expression":"document.title"}}'
 
-# Query selector
+# Get text content of first h1
 curl localhost:2229/cdp -d '{"method":"Runtime.evaluate","params":{"expression":"document.querySelector(\"h1\").textContent"}}'
 
-# Click element
+# Click the first button on page
 curl localhost:2229/cdp -d '{"method":"Runtime.evaluate","params":{"expression":"document.querySelector(\"button\").click()"}}'
+
+# Get all image URLs
+curl localhost:2229/cdp -d '{"method":"Runtime.evaluate","params":{"expression":"JSON.stringify([...document.images].map(i => i.src))"}}'
+
+# Get all headings (h1-h3)
+curl localhost:2229/cdp -d '{"method":"Runtime.evaluate","params":{"expression":"JSON.stringify([...document.querySelectorAll(\"h1,h2,h3\")].map(h => h.textContent))"}}'
+
+# Scroll to bottom of page
+curl localhost:2229/cdp -d '{"method":"Runtime.evaluate","params":{"expression":"window.scrollTo(0, document.body.scrollHeight)"}}'
+
+# Get localStorage contents
+curl localhost:2229/cdp -d '{"method":"Runtime.evaluate","params":{"expression":"JSON.stringify(localStorage)"}}'
+
+# Fill input by id
+curl localhost:2229/cdp -d '{"method":"Runtime.evaluate","params":{"expression":"document.getElementById(\"email\").value = \"user@example.com\""}}'
 ```
 
 ### Input
 ```bash
-# Type text
+# Type text into focused element
 curl localhost:2229/cdp -d '{"method":"Input.insertText","params":{"text":"Hello"}}'
 
-# Press key
+# Press Enter key
 curl localhost:2229/cdp -d '{"method":"Input.dispatchKeyEvent","params":{"type":"keyDown","key":"Enter"}}'
 
-# Click at x,y
+# Mouse click at coordinates (x=100, y=200)
 curl localhost:2229/cdp -d '{"method":"Input.dispatchMouseEvent","params":{"type":"mousePressed","x":100,"y":200,"button":"left","clickCount":1}}'
 curl localhost:2229/cdp -d '{"method":"Input.dispatchMouseEvent","params":{"type":"mouseReleased","x":100,"y":200,"button":"left","clickCount":1}}'
 ```
 
 ### Network
 ```bash
-# Enable network tracking
+# Enable network event tracking (required for intercepting requests)
 curl localhost:2229/cdp -d '{"method":"Network.enable"}'
 
-# Get cookies
+# Get all cookies for current page
 curl localhost:2229/cdp -d '{"method":"Network.getCookies"}'
 
-# Set cookie
+# Set a new cookie
 curl localhost:2229/cdp -d '{"method":"Network.setCookie","params":{"name":"test","value":"123","domain":"example.com"}}'
 
-# Clear cookies
+# Clear all browser cookies
 curl localhost:2229/cdp -d '{"method":"Network.clearBrowserCookies"}'
 ```
 
 ### Emulation
 ```bash
-# Set viewport size
+# Set desktop viewport (1920x1080)
 curl -s localhost:2229/cdp -d @- <<EOF
 {
   "method": "Emulation.setDeviceMetricsOverride",
@@ -205,25 +171,28 @@ curl -s localhost:2229/cdp -d @- <<EOF
 }
 EOF
 
-# Common sizes:
+# Common viewport sizes:
 # Desktop: 1920x1080, scale 1, mobile false
 # Laptop:  1366x768,  scale 1, mobile false
 # iPad:    768x1024,  scale 2, mobile true
 # iPhone:  375x812,   scale 3, mobile true
 
-# Reset viewport
+# Reset viewport to default
 curl localhost:2229/cdp -d '{"method":"Emulation.clearDeviceMetricsOverride"}'
 
-# Geolocation
+# Set geolocation to New York
 curl localhost:2229/cdp -d '{"method":"Emulation.setGeolocationOverride","params":{"latitude":40.7128,"longitude":-74.006}}'
 
-# Dark mode
+# Enable dark mode
 curl localhost:2229/cdp -d '{"method":"Emulation.setEmulatedMedia","params":{"features":[{"name":"prefers-color-scheme","value":"dark"}]}}'
+
+# Enable light mode
+curl localhost:2229/cdp -d '{"method":"Emulation.setEmulatedMedia","params":{"features":[{"name":"prefers-color-scheme","value":"light"}]}}'
 ```
 
 ### Screenshot
 ```bash
-# Take screenshot and save to file
+# Capture visible viewport and save as PNG
 curl -s localhost:2229/cdp -d @- <<EOF | jq -r '.data' | base64 -d > screenshot.png
 {
   "method": "Page.captureScreenshot",
@@ -231,7 +200,7 @@ curl -s localhost:2229/cdp -d @- <<EOF | jq -r '.data' | base64 -d > screenshot.
 }
 EOF
 
-# Full page screenshot
+# Capture full scrollable page (not just viewport)
 curl -s localhost:2229/cdp -d @- <<EOF | jq -r '.data' | base64 -d > full.png
 {
   "method": "Page.captureScreenshot",
@@ -239,7 +208,7 @@ curl -s localhost:2229/cdp -d @- <<EOF | jq -r '.data' | base64 -d > full.png
 }
 EOF
 
-# JPEG with quality
+# Capture as JPEG with 80% quality (smaller file size)
 curl -s localhost:2229/cdp -d @- <<EOF | jq -r '.data' | base64 -d > screenshot.jpg
 {
   "method": "Page.captureScreenshot",
