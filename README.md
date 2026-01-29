@@ -67,6 +67,19 @@ curl localhost:2229/cdp -d '{"method":"...", "params":{...}}'
 curl localhost:2229/health
 ```
 
+For complex queries use heredoc:
+
+```bash
+curl -s localhost:2229/cdp -d @- <<EOF
+{
+  "method": "Runtime.evaluate",
+  "params": {
+    "expression": "JSON.stringify([...document.querySelectorAll('a')].map(a => a.href))"
+  }
+}
+EOF
+```
+
 ## CDP Methods
 
 ### Page
