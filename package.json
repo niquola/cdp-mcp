@@ -1,6 +1,6 @@
 {
   "name": "chro",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Minimal CDP MCP server for Claude Code",
   "main": "src/index.js",
   "type": "module",
