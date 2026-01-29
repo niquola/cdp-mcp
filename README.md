@@ -63,9 +63,80 @@ bun src/index.js
 ### REST API
 
 ```bash
-curl localhost:2229/cdp -d '{"method":"Page.navigate","params":{"url":"https://example.com"}}'
-curl localhost:2229/cdp -d '{"method":"Runtime.evaluate","params":{"expression":"document.title"}}'
+curl localhost:2229/cdp -d '{"method":"...", "params":{...}}'
 curl localhost:2229/health
+```
+
+## CDP Methods
+
+### Page
+```bash
+# Navigate
+curl localhost:2229/cdp -d '{"method":"Page.navigate","params":{"url":"https://example.com"}}'
+
+# Reload
+curl localhost:2229/cdp -d '{"method":"Page.reload"}'
+
+# Screenshot (base64)
+curl localhost:2229/cdp -d '{"method":"Page.captureScreenshot","params":{"format":"png"}}'
+
+# PDF
+curl localhost:2229/cdp -d '{"method":"Page.printToPDF"}'
+
+# Get HTML
+curl localhost:2229/cdp -d '{"method":"Runtime.evaluate","params":{"expression":"document.documentElement.outerHTML"}}'
+```
+
+### Runtime (JavaScript)
+```bash
+# Execute JS
+curl localhost:2229/cdp -d '{"method":"Runtime.evaluate","params":{"expression":"document.title"}}'
+
+# Query selector
+curl localhost:2229/cdp -d '{"method":"Runtime.evaluate","params":{"expression":"document.querySelector(\"h1\").textContent"}}'
+
+# Click element
+curl localhost:2229/cdp -d '{"method":"Runtime.evaluate","params":{"expression":"document.querySelector(\"button\").click()"}}'
+```
+
+### Input
+```bash
+# Type text
+curl localhost:2229/cdp -d '{"method":"Input.insertText","params":{"text":"Hello"}}'
+
+# Press key
+curl localhost:2229/cdp -d '{"method":"Input.dispatchKeyEvent","params":{"type":"keyDown","key":"Enter"}}'
+
+# Click at x,y
+curl localhost:2229/cdp -d '{"method":"Input.dispatchMouseEvent","params":{"type":"mousePressed","x":100,"y":200,"button":"left","clickCount":1}}'
+curl localhost:2229/cdp -d '{"method":"Input.dispatchMouseEvent","params":{"type":"mouseReleased","x":100,"y":200,"button":"left","clickCount":1}}'
+```
+
+### Network
+```bash
+# Enable network tracking
+curl localhost:2229/cdp -d '{"method":"Network.enable"}'
+
+# Get cookies
+curl localhost:2229/cdp -d '{"method":"Network.getCookies"}'
+
+# Set cookie
+curl localhost:2229/cdp -d '{"method":"Network.setCookie","params":{"name":"test","value":"123","domain":"example.com"}}'
+
+# Clear cookies
+curl localhost:2229/cdp -d '{"method":"Network.clearBrowserCookies"}'
+```
+
+### Emulation
+```bash
+# Mobile viewport
+curl localhost:2229/cdp -d '{"method":"Emulation.setDeviceMetricsOverride","params":{"width":375,"height":812,"deviceScaleFactor":3,"mobile":true}}'
+
+# Geolocation
+curl localhost:2229/cdp -d '{"method":"Emulation.setGeolocationOverride","params":{"latitude":40.7128,"longitude":-74.006}}'
+
+# Dark mode
+curl localhost:2229/cdp -d '{"method":"Emulation.setEmulatedMedia","params":{"features":[{"name":"prefers-color-scheme","value":"dark"}]}}'
 ```
 
 ## Architecture
