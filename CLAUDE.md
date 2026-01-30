@@ -109,3 +109,15 @@ bun --hot ./index.ts
 ```
 
 For more information, read the Bun API docs in `node_modules/bun-types/docs/**.mdx`.
+
+## Source
+
+This CLAUDE.md is based on the official Bun template:
+
+```bash
+# View original
+curl -s https://raw.githubusercontent.com/oven-sh/bun/main/CLAUDE.md
+
+# Compare with local
+diff <(curl -s https://raw.githubusercontent.com/oven-sh/bun/main/CLAUDE.md) CLAUDE.md
+```
