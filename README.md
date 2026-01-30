@@ -51,6 +51,20 @@ bun src/index.js
 }
 ```
 
+## Testing
+
+Verify the server is running:
+
+```bash
+# Check health endpoint
+curl localhost:2229/health
+# {"ok":true,"ws":false}
+
+# Test CDP connection
+curl localhost:2229/cdp -d '{"method":"Browser.getVersion"}'
+# Returns Chrome version info
+```
+
 ## Usage
 
 ### MCP Tool
